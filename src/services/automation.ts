@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+// Automation service for MongoDB backend
 
 interface AutomationAction {
   type: 'password_reset' | 'send_email' | 'create_account' | 'grant_access' | 'log_only';
