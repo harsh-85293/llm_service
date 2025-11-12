@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ComponentType } from 'react';
 import { Ticket, AuditLog } from '../lib/supabase';
 import { TicketList } from './TicketList';
 import { Footer } from './Footer';
@@ -146,7 +146,7 @@ function StatCard({
 }: {
   title: string;
   value: number;
-  icon: any;
+  icon: ComponentType<{ className?: string }>;
   color: string;
   subtitle?: string;
 }) {

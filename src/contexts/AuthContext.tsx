@@ -60,8 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: userData._id,
       });
       return { error: null };
-    } catch (error: any) {
-      return { error: error.message || 'An unexpected error occurred' };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+      return { error: message };
     }
   };
 
@@ -74,9 +75,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: userData._id,
       });
       return { error: null };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Sign up error:', error);
-      return { error: error.message || 'An unexpected error occurred' };
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+      return { error: message };
     }
   };
 

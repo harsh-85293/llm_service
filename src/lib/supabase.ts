@@ -31,7 +31,7 @@ export interface AuditLog {
   ticket_id: string;
   user_id?: string;
   action_type: 'request_created' | 'ai_analysis' | 'automation_executed' | 'escalated' | 'admin_action' | 'completed';
-  action_details: Record<string, any>;
+  action_details: Record<string, unknown>;
   success: boolean;
   error_message?: string;
   created_at: string;
@@ -42,8 +42,8 @@ export interface AutomationRule {
   name: string;
   description: string;
   category: string;
-  conditions: Record<string, any>;
-  actions: Record<string, any>;
+  conditions: Record<string, unknown>;
+  actions: Record<string, unknown>;
   enabled: boolean;
   success_count: number;
   failure_count: number;

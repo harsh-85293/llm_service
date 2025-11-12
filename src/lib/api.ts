@@ -87,7 +87,7 @@ class APIClient {
     });
   }
 
-  async updateTicket(id: string, data: any) {
+  async updateTicket(id: string, data: Record<string, unknown>) {
     return this.request(`/tickets/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -98,7 +98,7 @@ class APIClient {
     return this.request(`/tickets/${id}/logs`);
   }
 
-  async createLLMInteraction(ticketId: string, data: any) {
+  async createLLMInteraction(ticketId: string, data: Record<string, unknown>) {
     return this.request(`/tickets/${ticketId}/llm`, {
       method: 'POST',
       body: JSON.stringify(data),

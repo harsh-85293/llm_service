@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ComponentType } from 'react';
 import { Ticket } from '../lib/supabase';
 import { TicketForm } from './TicketForm';
 import { TicketList } from './TicketList';
@@ -50,7 +50,7 @@ export function UserPortal({ userId, userName, ticketService }: UserPortalProps)
         });
         loadTickets();
       }
-    } catch (error) {
+    } catch {
       setNotification({
         type: 'error',
         message: 'An unexpected error occurred. Please try again.',
@@ -165,7 +165,7 @@ function StatCard({
 }: {
   title: string;
   value: number;
-  icon: any;
+  icon: ComponentType<{ className?: string }>;
   gradient: string;
 }) {
   return (

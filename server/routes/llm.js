@@ -11,8 +11,11 @@ router.post('/analyze', async (req, res) => {
     if (!requestText) {
       return res.status(400).json({ error: 'requestText is required' });
     }
-
-    const OPENAI_KEY = process.env.OPENAI_API_KEY;
+    const OPENAI_KEY =
+      process.env.OPENAI_API_KEY ||
+      process.env.OPENAI_KEY ||
+      process.env.OPENAI_SECRET ||
+      process.env.VITE_OPENAI_API_KEY;
     if (!OPENAI_KEY) {
       return res.status(500).json({ error: 'OpenAI key not configured on server' });
     }
@@ -91,7 +94,11 @@ router.post('/respond', async (req, res) => {
     const { context, question } = req.body;
     if (!question) return res.status(400).json({ error: 'question is required' });
 
-    const OPENAI_KEY = process.env.OPENAI_API_KEY;
+    const OPENAI_KEY =
+      process.env.OPENAI_API_KEY ||
+      process.env.OPENAI_KEY ||
+      process.env.OPENAI_SECRET ||
+      process.env.VITE_OPENAI_API_KEY;
     if (!OPENAI_KEY) return res.status(500).json({ error: 'OpenAI key not configured on server' });
 
     const messages = [

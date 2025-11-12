@@ -118,10 +118,13 @@ export class AutomationService {
   }
 
   private async logAction(
-    _ticketId: string,
-    _actionType: string,
-    _details: Record<string, any>
+    ticketId: string,
+    actionType: string,
+    details: Record<string, unknown>
   ): Promise<void> {
+    void ticketId;
+    void actionType;
+    void details;
     return;
   }
 

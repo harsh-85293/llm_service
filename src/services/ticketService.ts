@@ -31,6 +31,7 @@ export class TicketService {
   async createTicket(requestText: string): Promise<{ ticket: Ticket | null; error: string | null }> {
     try {
       const analysis = await this.llmService.analyzeRequest(requestText);
+      const analysisFailed = (analysis.reasoning || '').toLowerCase().includes('failed to analyze request with llm');
 
       const ticket = await api.createTicket({
         request_text: requestText,
@@ -44,23 +45,29 @@ export class TicketService {
       };
 
       await api.updateTicket(ticket._id, {
-        status: 'processing',
+        status: analysisFailed ? 'pending' : 'processing',
         complexity_score: analysis.complexity_score,
       });
 
-      await api.createLLMInteraction(ticket._id, {
-        model: 'gpt-4o-mini',
-        prompt: `Analyze: ${requestText}`,
-        response: JSON.stringify(analysis),
-        tokens_used: 0,
-        latency_ms: 0,
-      });
+      if (!analysisFailed) {
+        await api.createLLMInteraction(ticket._id, {
+          model: 'gpt-4o-mini',
+          prompt: `Analyze: ${requestText}`,
+          response: JSON.stringify(analysis),
+          tokens_used: 0,
+          latency_ms: 0,
+        });
+      } else {
+        await api.updateTicket(ticket._id, {
+          resolution_notes: 'LLM analysis temporarily unavailable. Ticket queued for manual triage.',
+        });
+      }
 
-      const shouldEscalate = await this.automationService.checkEscalationCriteria(
+      const shouldEscalate = !analysisFailed && (await this.automationService.checkEscalationCriteria(
         analysis.complexity_score,
         analysis.category,
         analysis.can_automate
-      );
+      ));
 
       if (shouldEscalate) {
         await this.escalateTicket(ticket._id, analysis.reasoning);
@@ -93,9 +100,10 @@ export class TicketService {
       }
 
       return { ticket: ticketData, error: null };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating ticket:', error);
-      return { ticket: null, error: error.message || 'Failed to create ticket' };
+      const message = error instanceof Error ? error.message : 'Failed to create ticket';
+      return { ticket: null, error: message };
     }
   }
 
@@ -112,8 +120,9 @@ export class TicketService {
 
   async getUserTickets(): Promise<Ticket[]> {
     try {
-      const tickets = await api.getTickets();
-      return tickets.map((t: any) => ({ ...t, id: t._id }));
+      type ServerTicket = Omit<Ticket, 'id'> & { _id: string };
+      const tickets = (await api.getTickets()) as unknown as ServerTicket[];
+      return tickets.map((t) => ({ ...t, id: t._id }));
     } catch (error) {
       console.error('Error fetching tickets:', error);
       return [];
@@ -122,8 +131,9 @@ export class TicketService {
 
   async getAllTickets(): Promise<Ticket[]> {
     try {
-      const tickets = await api.getTickets();
-      return tickets.map((t: any) => ({ ...t, id: t._id }));
+      type ServerTicket = Omit<Ticket, 'id'> & { _id: string };
+      const tickets = (await api.getTickets()) as unknown as ServerTicket[];
+      return tickets.map((t) => ({ ...t, id: t._id }));
     } catch (error) {
       console.error('Error fetching all tickets:', error);
       return [];
@@ -132,7 +142,7 @@ export class TicketService {
 
   async updateTicketStatus(ticketId: string, status: string, notes?: string): Promise<void> {
     try {
-      const updateData: any = { status };
+      const updateData: Partial<{ status: string; resolution_notes: string; completed_at: string }> = { status };
 
       if (notes) {
         updateData.resolution_notes = notes;
@@ -142,16 +152,44 @@ export class TicketService {
         updateData.completed_at = new Date().toISOString();
       }
 
-      await api.updateTicket(ticketId, updateData);
+      await api.updateTicket(ticketId, updateData as Record<string, unknown>);
     } catch (error) {
       console.error('Error updating ticket status:', error);
       throw error;
     }
   }
 
-  async getTicketLogs(ticketId: string): Promise<any[]> {
+  async getTicketLogs(ticketId: string): Promise<Array<{
+    id: string;
+    ticket_id: string;
+    user_id?: string;
+    action_type: 'request_created' | 'ai_analysis' | 'automation_executed' | 'escalated' | 'admin_action' | 'completed';
+    action_details: Record<string, unknown>;
+    success: boolean;
+    error_message?: string;
+    created_at: string;
+  }>> {
     try {
-      return await api.getTicketLogs(ticketId);
+      type ActionType = 'request_created' | 'ai_analysis' | 'automation_executed' | 'escalated' | 'admin_action' | 'completed';
+      const ACTION_TYPES: ActionType[] = ['request_created', 'ai_analysis', 'automation_executed', 'escalated', 'admin_action', 'completed'];
+      const logs = await api.getTicketLogs(ticketId);
+      return (logs as Array<Record<string, unknown>>).map((l) => {
+        const anyLog = l as Record<string, unknown> & { _id?: string };
+        const candidate = String(anyLog.action_type ?? '');
+        const normalized: ActionType = ACTION_TYPES.includes(candidate as ActionType)
+          ? (candidate as ActionType)
+          : 'admin_action';
+        return {
+          id: String(anyLog._id ?? ''),
+          ticket_id: String(anyLog.ticket_id ?? ''),
+          user_id: anyLog.user_id ? String(anyLog.user_id) : undefined,
+          action_type: normalized,
+          action_details: (anyLog.action_details as Record<string, unknown>) ?? {},
+          success: Boolean(anyLog.success ?? true),
+          error_message: anyLog.error_message ? String(anyLog.error_message) : undefined,
+          created_at: String(anyLog.created_at ?? new Date().toISOString()),
+        };
+      });
     } catch (error) {
       console.error('Error fetching ticket logs:', error);
       return [];
