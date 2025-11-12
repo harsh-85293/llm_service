@@ -118,34 +118,15 @@ export class AutomationService {
   }
 
   private async logAction(
-    ticketId: string,
-    actionType: string,
-    details: Record<string, any>
+    _ticketId: string,
+    _actionType: string,
+    _details: Record<string, any>
   ): Promise<void> {
-    await supabase.from('audit_logs').insert({
-      ticket_id: ticketId,
-      action_type: 'automation_executed',
-      action_details: {
-        automation_type: actionType,
-        ...details,
-      },
-      success: true,
-    });
+    return;
   }
 
   async getAutomationRules() {
-    const { data, error } = await supabase
-      .from('automation_rules')
-      .select('*')
-      .eq('enabled', true)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching automation rules:', error);
-      return [];
-    }
-
-    return data || [];
+    return [];
   }
 
   async checkEscalationCriteria(

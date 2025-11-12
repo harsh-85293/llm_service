@@ -70,7 +70,7 @@ export function UserPortal({ userId, userName, ticketService }: UserPortalProps)
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex flex-col transition-colors">
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-        <div className="mb-10">
+        <div className="mb-10" id="account">
           <div className="flex items-center gap-4 mb-2">
             <div className="bg-gradient-to-br from-blue-600 to-cyan-500 p-4 rounded-2xl shadow-lg shadow-blue-500/30">
               <Headphones className="w-8 h-8 text-white" />
@@ -136,7 +136,7 @@ export function UserPortal({ userId, userName, ticketService }: UserPortalProps)
           </div>
         )}
 
-        <div className="mb-12">
+        <div className="mb-12" id="submit-request">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-8 w-1 bg-gradient-to-b from-blue-600 to-cyan-500 rounded-full"></div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Submit a New Request</h2>
@@ -144,7 +144,7 @@ export function UserPortal({ userId, userName, ticketService }: UserPortalProps)
           <TicketForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
         </div>
 
-        <div>
+        <div id="requests">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-8 w-1 bg-gradient-to-b from-blue-600 to-cyan-500 rounded-full"></div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Requests</h2>

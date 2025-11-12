@@ -80,7 +80,7 @@ export function AdminDashboard({ ticketService }: AdminDashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex flex-col transition-colors">
+    <div id="admin-dashboard" className="min-h-screen bg-gray-50 dark:bg-slate-900 flex flex-col transition-colors">
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Admin Dashboard</h1>

@@ -34,28 +34,28 @@ export function Footer() {
             <h4 className="text-lg font-semibold mb-6 text-white">Quick Links</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="https://github.com/harsh-85293/llm_service#readme" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <FileText className="w-4 h-4" />
                   <span>Documentation</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#account" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <User className="w-4 h-4" />
                   <span>My Profile</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#submit-request" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <MessageCircle className="w-4 h-4" />
                   <span>Support Requests</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#admin-dashboard" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <Shield className="w-4 h-4" />
                   <span>Admin Dashboard</span>
@@ -68,31 +68,31 @@ export function Footer() {
             <h4 className="text-lg font-semibold mb-6 text-white">Support</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="https://github.com/harsh-85293/llm_service/issues" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Help Center</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="https://docs.github.com/site-policy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Community Guidelines</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Privacy Policy</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Terms of Service</span>
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="mailto:harsh.ramchandani122003@gmail.com" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Contact Us</span>
                 </a>
