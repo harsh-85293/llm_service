@@ -81,6 +81,11 @@ export function TicketList({ tickets, onTicketClick }: TicketListProps) {
                 {ticket.complexity_score > 0 && (
                   <span className="bg-gray-100 px-2.5 py-1 rounded-full font-medium">Complexity: {ticket.complexity_score}/10</span>
                 )}
+                {ticket.assigned_to && (
+                  <span className="inline-flex items-center text-blue-600 font-semibold bg-blue-50 px-2.5 py-1 rounded-full">
+                    👤 Assigned to: {ticket.assigned_to}
+                  </span>
+                )}
               </div>
               {ticket.completed_at && (
                 <span className="text-gray-400 font-medium">

@@ -3,7 +3,11 @@ import { api } from '../lib/api';
 import { EmployeeCard, type Employee } from './EmployeeCard';
 import { Users, RefreshCw, AlertCircle } from 'lucide-react';
 
-export function EmployeeInterface() {
+interface EmployeeInterfaceProps {
+  onTokenChange?: (tokenHolderId: string | null) => void;
+}
+
+export function EmployeeInterface({ onTokenChange }: EmployeeInterfaceProps) {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [tokenHolderId, setTokenHolderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -66,11 +70,13 @@ export function EmployeeInterface() {
   const assignRandomToken = (employeeList: Employee[] = employees) => {
     if (employeeList.length === 0) {
       setTokenHolderId(null);
+      onTokenChange?.(null);
       return;
     }
 
     const selected = selectRandomEmployee(employeeList);
     setTokenHolderId(selected.id);
+    onTokenChange?.(selected.id);
   };
 
   const reassignToken = () => {

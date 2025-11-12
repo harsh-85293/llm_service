@@ -32,11 +32,29 @@ export function AdminDashboard({ ticketService }: AdminDashboardProps) {
     avgComplexity: 0,
   });
   const [loading, setLoading] = useState(true);
-  const employees = ['Alice Johnson', 'Bob Smith', 'Charlie Nguyen', 'Diana Patel', 'Evan Lee'];
+  const [employees, setEmployees] = useState<Array<{ id: string; name: string }>>([]);
+  const [tokenHolderId, setTokenHolderId] = useState<string | null>(null);
 
   useEffect(() => {
     loadTickets();
+    loadEmployees();
   }, []);
+
+  const loadEmployees = async () => {
+    try {
+      const response = await api.getUsers();
+      const users = Array.isArray(response) ? response : (response.users || []);
+      const adminUsers = users
+        .filter((user: { role: string }) => user.role === 'admin' || user.role === 'super_admin')
+        .map((user: { _id: string; id?: string; name: string }) => ({
+          id: user.id || user._id,
+          name: user.name,
+        }));
+      setEmployees(adminUsers);
+    } catch (error) {
+      console.error('Error loading employees:', error);
+    }
+  };
 
   const loadTickets = async () => {
     setLoading(true);
@@ -73,11 +91,18 @@ export function AdminDashboard({ ticketService }: AdminDashboardProps) {
     loadTickets();
   };
 
-  const handleAssignRandomEmployee = async () => {
+  const handleAssignToTokenHolder = async () => {
+    if (!selectedTicket || !tokenHolderId) return;
+    const tokenHolder = employees.find(e => e.id === tokenHolderId);
+    if (!tokenHolder) return;
+    await ticketService.assignTicketToEmployee(selectedTicket.id, tokenHolder.name);
+    setSelectedTicket(null);
+    loadTickets();
+  };
+
+  const handleAssignToEmployee = async (employeeName: string) => {
     if (!selectedTicket) return;
-    const idx = Math.floor(Math.random() * employees.length);
-    const chosen = employees[idx];
-    await ticketService.assignTicketToEmployee(selectedTicket.id, chosen);
+    await ticketService.assignTicketToEmployee(selectedTicket.id, employeeName);
     setSelectedTicket(null);
     loadTickets();
   };
@@ -127,7 +152,7 @@ export function AdminDashboard({ ticketService }: AdminDashboardProps) {
         </div>
 
         <div className="mb-8">
-          <EmployeeInterface />
+          <EmployeeInterface onTokenChange={setTokenHolderId} />
         </div>
 
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-8">
@@ -145,7 +170,9 @@ export function AdminDashboard({ ticketService }: AdminDashboardProps) {
             onClose={() => setSelectedTicket(null)}
             onUpdateStatus={handleUpdateStatus}
             employees={employees}
-            onAssignRandomEmployee={handleAssignRandomEmployee}
+            tokenHolderId={tokenHolderId}
+            onAssignToTokenHolder={handleAssignToTokenHolder}
+            onAssignToEmployee={handleAssignToEmployee}
           />
         )}
       </div>
@@ -187,16 +214,21 @@ function TicketDetailModal({
   onClose,
   onUpdateStatus,
   employees,
-  onAssignRandomEmployee,
+  tokenHolderId,
+  onAssignToTokenHolder,
+  onAssignToEmployee,
 }: {
   ticket: Ticket;
   logs: AuditLog[];
   onClose: () => void;
   onUpdateStatus: (status: string, notes?: string) => void;
-  employees: string[];
-  onAssignRandomEmployee: () => void;
+  employees: Array<{ id: string; name: string }>;
+  tokenHolderId: string | null;
+  onAssignToTokenHolder: () => void;
+  onAssignToEmployee: (employeeName: string) => void;
 }) {
   const [notes, setNotes] = useState('');
+  const tokenHolder = employees.find(e => e.id === tokenHolderId);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -284,19 +316,41 @@ function TicketDetailModal({
         {ticket.status === 'escalated' && (
           <div className="p-6 border-t border-gray-200">
             <h3 className="font-semibold text-gray-900 mb-3">Assign to Employee</h3>
-            <div className="grid grid-cols-2 gap-2 mb-3">
-              {employees.map((e) => (
-                <div key={e} className="text-sm text-gray-700 border border-gray-200 rounded-md px-3 py-2">
-                  {e}
+            
+            {tokenHolder && (
+              <div className="mb-4 p-4 bg-yellow-50 border-2 border-yellow-500 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900 mb-1">🎯 Current Token Holder</p>
+                    <p className="text-lg font-bold text-yellow-700">{tokenHolder.name}</p>
+                  </div>
+                  <button
+                    onClick={onAssignToTokenHolder}
+                    className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-semibold"
+                  >
+                    Assign to Token Holder
+                  </button>
                 </div>
+              </div>
+            )}
+
+            <p className="text-sm text-gray-600 mb-3">Or assign to a specific employee:</p>
+            <div className="grid grid-cols-2 gap-2">
+              {employees.map((e) => (
+                <button
+                  key={e.id}
+                  onClick={() => onAssignToEmployee(e.name)}
+                  className={`text-sm text-left border rounded-lg px-3 py-2 transition-colors ${
+                    e.id === tokenHolderId
+                      ? 'border-yellow-500 bg-yellow-50 text-yellow-900 font-semibold hover:bg-yellow-100'
+                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {e.id === tokenHolderId && '🎯 '}
+                  {e.name}
+                </button>
               ))}
             </div>
-            <button
-              onClick={onAssignRandomEmployee}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Assign Random & Send Token
-            </button>
           </div>
         )}
       </div>
