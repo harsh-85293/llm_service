@@ -7,13 +7,26 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { Header } from './components/Header';
 import { TicketService } from './services/ticketService';
 import { } from 'lucide-react';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { TermsOfService } from './components/TermsOfService';
+import { HelpCenter } from './components/HelpCenter';
+import { CommunityGuidelines } from './components/CommunityGuidelines';
+import { ContactUs } from './components/ContactUs';
 
 function AppContent() {
   const { user, loading, signIn, signUp } = useAuth();
   const [ticketService, setTicketService] = useState<TicketService | null>(null);
+  const [page, setPage] = useState<string>('');
 
   useEffect(() => {
     setTicketService(new TicketService());
+  }, []);
+
+  useEffect(() => {
+    const updatePage = () => setPage(window.location.hash.replace('#', ''));
+    updatePage();
+    window.addEventListener('hashchange', updatePage);
+    return () => window.removeEventListener('hashchange', updatePage);
   }, []);
 
   if (loading) {
@@ -26,6 +39,12 @@ function AppContent() {
       </div>
     );
   }
+
+  if (page === 'privacy') return <PrivacyPolicy />;
+  if (page === 'terms') return <TermsOfService />;
+  if (page === 'help') return <HelpCenter />;
+  if (page === 'guidelines') return <CommunityGuidelines />;
+  if (page === 'contact') return <ContactUs />;
 
   if (!user) {
     return <AuthForm onSignIn={signIn} onSignUp={signUp} />;

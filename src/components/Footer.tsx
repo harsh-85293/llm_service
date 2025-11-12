@@ -34,7 +34,7 @@ export function Footer() {
             <h4 className="text-lg font-semibold mb-6 text-white">Quick Links</h4>
             <ul className="space-y-3">
               <li>
-                <a href="https://github.com/harsh-85293/llm_service#readme" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#help" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <FileText className="w-4 h-4" />
                   <span>Documentation</span>
@@ -68,31 +68,31 @@ export function Footer() {
             <h4 className="text-lg font-semibold mb-6 text-white">Support</h4>
             <ul className="space-y-3">
               <li>
-                <a href="https://github.com/harsh-85293/llm_service/issues" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#help" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Help Center</span>
                 </a>
               </li>
               <li>
-                <a href="https://docs.github.com/site-policy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#guidelines" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Community Guidelines</span>
                 </a>
               </li>
               <li>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#privacy" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Privacy Policy</span>
                 </a>
               </li>
               <li>
-                <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#terms" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Terms of Service</span>
                 </a>
               </li>
               <li>
-                <a href="mailto:harsh.ramchandani122003@gmail.com" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
+                <a href="#contact" className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors group">
                   <div className="w-1 h-1 bg-cyan-400 rounded-full group-hover:w-2 transition-all"></div>
                   <span>Contact Us</span>
                 </a>
