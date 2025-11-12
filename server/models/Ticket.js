@@ -50,6 +50,15 @@ const ticketSchema = new mongoose.Schema({
   completed_at: {
     type: Date,
   },
+  escalation_token: {
+    type: String,
+  },
+  token_generated_at: {
+    type: Date,
+  },
+  token_expires_at: {
+    type: Date,
+  },
 });
 
 ticketSchema.pre('save', function(next) {

@@ -110,7 +110,7 @@ export function Footer() {
               <span className="text-blue-200 text-sm">Connect with us:</span>
               <div className="flex gap-3">
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/harsh-ramchandani007/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/10 hover:bg-white/20 p-2.5 rounded-lg transition-all hover:scale-110"
@@ -118,7 +118,7 @@ export function Footer() {
                   <Linkedin className="w-5 h-5 text-white" />
                 </a>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/harsh-85293"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/10 hover:bg-white/20 p-2.5 rounded-lg transition-all hover:scale-110"
@@ -126,7 +126,7 @@ export function Footer() {
                   <Github className="w-5 h-5 text-white" />
                 </a>
                 <a
-                  href="mailto:support@example.com"
+                  href="mailto:harsh.ramchandani122003@gmail.com"
                   className="bg-white/10 hover:bg-white/20 p-2.5 rounded-lg transition-all hover:scale-110"
                 >
                   <Mail className="w-5 h-5 text-white" />

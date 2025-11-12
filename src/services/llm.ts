@@ -8,126 +8,65 @@ interface LLMAnalysisResult {
 }
 
 export class LLMService {
-  private apiKey: string;
-  private baseUrl = 'https://api.openai.com/v1/chat/completions';
+  private proxyUrl = (import.meta.env.VITE_API_URL || '') + '/llm/analyze';
 
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
+  constructor() {
+    // constructor kept for compatibility; API key is handled server-side via proxy
   }
 
   async analyzeRequest(requestText: string): Promise<LLMAnalysisResult> {
-    const startTime = Date.now();
-
-    const prompt = `You are an IT support analyst. Analyze the following IT support request and provide a structured response.
-
-Request: "${requestText}"
-
-Analyze and respond with:
-1. Category (password_reset, access_request, hardware, software, network, other)
-2. Priority (low, medium, high, urgent)
-3. Complexity Score (1-10, where 1 is simplest)
-4. Can this be automated? (yes/no)
-5. Suggested automated action if applicable
-6. Brief reasoning
-
-Respond in JSON format only:
-{
-  "category": "...",
-  "priority": "...",
-  "complexity_score": number,
-  "can_automate": boolean,
-  "suggested_action": "...",
-  "reasoning": "..."
-}`;
-
     try {
-      const response = await fetch(this.baseUrl, {
+      const res = await fetch(this.proxyUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are an expert IT support analyst. Always respond with valid JSON only.',
-            },
-            {
-              role: 'user',
-              content: prompt,
-            },
-          ],
-          temperature: 0.3,
-          max_tokens: 500,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestText }),
       });
 
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.statusText}`);
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(`LLM proxy error: ${res.status} ${txt}`);
       }
 
-      const data = await response.json();
-      const latency = Date.now() - startTime;
-
-      const content = data.choices[0].message.content;
-      const result = JSON.parse(content);
+      const data = await res.json();
 
       return {
-        category: result.category,
-        priority: result.priority,
-        complexity_score: result.complexity_score,
-        can_automate: result.can_automate,
-        suggested_action: result.suggested_action,
-        reasoning: result.reasoning,
+        category: data.category,
+        priority: data.priority,
+        complexity_score: data.complexity_score,
+        can_automate: data.can_automate,
+        suggested_action: data.suggested_action,
+        reasoning: data.reasoning,
       };
     } catch (error) {
-      console.error('LLM analysis error:', error);
-
+      console.error('LLM analysis error via proxy:', error);
       return {
         category: 'other',
         priority: 'medium',
         complexity_score: 5,
         can_automate: false,
-        reasoning: 'Failed to analyze request with LLM, using default values',
+        reasoning: 'Failed to analyze request with LLM (proxy)',
       };
     }
   }
 
   async generateResponse(context: string, question: string): Promise<string> {
     try {
-      const response = await fetch(this.baseUrl, {
+      const proxy = (import.meta.env.VITE_API_URL || '') + '/llm/respond';
+      const res = await fetch(proxy, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful IT support assistant. Provide clear, concise, and professional responses.',
-            },
-            {
-              role: 'user',
-              content: `Context: ${context}\n\nQuestion: ${question}`,
-            },
-          ],
-          temperature: 0.7,
-          max_tokens: 300,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ context, question }),
       });
 
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.statusText}`);
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(`LLM proxy respond error: ${res.status} ${txt}`);
       }
 
-      const data = await response.json();
-      return data.choices[0].message.content;
+      const data = await res.json();
+      return data.content || '';
     } catch (error) {
-      console.error('LLM response generation error:', error);
+      console.error('LLM response generation error via proxy:', error);
       return 'I apologize, but I encountered an error processing your request. Please try again or contact an administrator.';
     }
   }

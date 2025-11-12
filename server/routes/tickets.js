@@ -92,6 +92,22 @@ router.patch('/:id', authenticate, async (req, res) => {
       }
     });
 
+    // If the ticket is being escalated, generate an escalation token so an employee can pick it up
+    if (req.body.status === 'escalated') {
+      // create a simple token (can be replaced by a more secure token generator)
+      const token = `${ticket._id.toString()}-${Math.random().toString(36).slice(2, 10)}`;
+      const now = new Date();
+      const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // token valid 24 hours
+
+      ticket.escalation_token = token;
+      ticket.token_generated_at = now;
+      ticket.token_expires_at = expiresAt;
+      // include token in resolution notes for visibility (optional)
+      ticket.resolution_notes = ticket.resolution_notes
+        ? `${ticket.resolution_notes}\nEscalation token: ${token}`
+        : `Escalation token: ${token}`;
+    }
+
     await ticket.save();
 
     const auditLog = new AuditLog({
