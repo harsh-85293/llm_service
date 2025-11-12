@@ -25,7 +25,7 @@ export function UserPortal({ userId, userName, ticketService }: UserPortalProps)
   }, [userId]);
 
   const loadTickets = async () => {
-    const data = await ticketService.getUserTickets(userId);
+    const data = await ticketService.getUserTickets();
     setTickets(data);
   };
 
@@ -34,7 +34,7 @@ export function UserPortal({ userId, userName, ticketService }: UserPortalProps)
     setNotification(null);
 
     try {
-      const { ticket, error } = await ticketService.createTicket(userId, request);
+      const { ticket, error } = await ticketService.createTicket(request);
 
       if (error) {
         setNotification({

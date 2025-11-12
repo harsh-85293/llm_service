@@ -3,16 +3,7 @@ import { Ticket, AuditLog } from '../lib/supabase';
 import { TicketList } from './TicketList';
 import { Footer } from './Footer';
 import { TicketService } from '../services/ticketService';
-import {
-  BarChart3,
-  Users,
-  CheckCircle,
-  Clock,
-  Zap,
-  ArrowUpRight,
-  TrendingUp,
-  Activity
-} from 'lucide-react';
+import { BarChart3, Clock, Zap, Activity, ArrowUpRight } from 'lucide-react';
 
 interface AdminDashboardProps {
   ticketService: TicketService;

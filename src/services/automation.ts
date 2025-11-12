@@ -1,10 +1,5 @@
 // Automation service for MongoDB backend
 
-interface AutomationAction {
-  type: 'password_reset' | 'send_email' | 'create_account' | 'grant_access' | 'log_only';
-  parameters: Record<string, any>;
-}
-
 interface AutomationResult {
   success: boolean;
   message: string;

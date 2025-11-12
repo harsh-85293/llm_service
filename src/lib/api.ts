@@ -18,13 +18,18 @@ class APIClient {
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {
-    const headers: HeadersInit = {
+    const baseHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...options.headers,
     };
 
+    const extraHeaders: Record<string, string> = options.headers
+      ? Object.fromEntries(new Headers(options.headers as HeadersInit))
+      : {};
+
+    const headers: Record<string, string> = { ...baseHeaders, ...extraHeaders };
+
     if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
+      headers.Authorization = `Bearer ${this.token}`;
     }
 
     const response = await fetch(`${API_URL}${endpoint}`, {

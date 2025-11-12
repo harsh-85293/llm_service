@@ -23,12 +23,12 @@ export class TicketService {
   private llmService: LLMService;
   private automationService: AutomationService;
 
-  constructor(openaiApiKey: string) {
-    this.llmService = new LLMService(openaiApiKey);
+  constructor() {
+    this.llmService = new LLMService();
     this.automationService = new AutomationService();
   }
 
-  async createTicket(userId: string, requestText: string): Promise<{ ticket: Ticket | null; error: string | null }> {
+  async createTicket(requestText: string): Promise<{ ticket: Ticket | null; error: string | null }> {
     try {
       const analysis = await this.llmService.analyzeRequest(requestText);
 
@@ -110,7 +110,7 @@ export class TicketService {
     }
   }
 
-  async getUserTickets(userId: string): Promise<Ticket[]> {
+  async getUserTickets(): Promise<Ticket[]> {
     try {
       const tickets = await api.getTickets();
       return tickets.map((t: any) => ({ ...t, id: t._id }));
